@@ -60,7 +60,8 @@ class PublicUserApiTest(TestCase):
         # checking the status code
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
         # now we check, the user is not created or not
-        user_exists = get_user_model().objects.filter(email=payload["email"]).exists()
+        user_exists = get_user_model().objects\
+            .filter(email=payload["email"]).exists()
         # checking it returns false
         self.assertFalse(user_exists)
 
