@@ -1,26 +1,32 @@
 """Views for Recie APIs"""
 
-from rest_framework import viewsets
+from rest_framework import (
+    viewsets,
+    mixins,
+)
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
-from core.models import Recipe
+from core.models import Recipe, Tag, Ingredient
 from recipe import serializers
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
-    """Model View set for Recipe model which
+    """
+    Model View set for Recipe model which
     Directly help to work with model
     """
 
-    serializer_class = serializers.RecipeSerializer
+    serializer_class = serializers.RecipeDetailSerializer
     queryset = Recipe.objects.all()
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         """Retrive recipe for authenticated user"""
-        return self.queryset.filter(user=self.request.user).order_by("-id")
+        return self.queryset.filter(
+            user=self.request.user,
+        ).order_by("-id")
 
     def get_serializer_class(self):
         """Return the serializer class for request"""
@@ -31,3 +37,39 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         """Create a new recipe"""
         serializer.save(user=self.request.user)
+
+
+class BaseRecipeAttrViewSet(
+    mixins.DestroyModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet,
+):
+    """
+    Base Viewset for recipe Attribute
+    """
+
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        """
+        Filter Query set to limted to autheticated user.
+        """
+        return self.queryset.filter(
+            user=self.request.user,
+        ).order_by("-name")
+
+
+class TagViewSet(BaseRecipeAttrViewSet):
+    """Viewset for tags in database"""
+
+    serializer_class = serializers.TagSerializer
+    queryset = Tag.objects.all()
+
+
+class IngredientViewSet(BaseRecipeAttrViewSet):
+    """Manage ingredients in the database."""
+
+    serializer_class = serializers.IngredientSerializer
+    queryset = Ingredient.objects.all()
