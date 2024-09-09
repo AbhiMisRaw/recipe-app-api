@@ -11,6 +11,7 @@ from rest_framework import status
 
 from core.models import Tag
 from recipe.serializers import TagSerializer
+from .test_recipe_api import create_recipe
 
 TAGS_URL = reverse("recipe:tag-list")
 
@@ -88,3 +89,37 @@ class PrivateTagsAPITest(TestCase):
         self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
         tags = Tag.objects.filter(user=self.user)
         self.assertFalse(tags.exists())
+
+    def test_filter_tags_assigned_to_recipe(self):
+        """
+        Test for Tags to those assigned to recipes.
+        """
+
+        tag1 = Tag.objects.create(user=self.user, name="Breakfast")
+        tag2 = Tag.objects.create(user=self.user, name="Lunch")
+
+        recipe = create_recipe(user=self.user, title="Chole Bhature")
+        recipe.tags.add(tag1)
+        res = self.client.get(TAGS_URL, {"assigned_only": 1})
+
+        s1 = TagSerializer(tag1)
+        s2 = TagSerializer(tag2)
+
+        self.assertIn(s1.data, res.data)
+        self.assertNotIn(s2.data, res.data)
+
+    def test_tags_filter_unique_result(self):
+        """
+        Test for filter unique tags return a unique list.
+        """
+        tag1 = Tag.objects.create(user=self.user, name="Breakfast")
+
+        recipe1 = create_recipe(user=self.user, title="Chole Bhature")
+        recipe2 = create_recipe(user=self.user, title="Aalo Khasta")
+
+        recipe1.tags.add(tag1)
+        recipe2.tags.add(tag1)
+
+        res = self.client.get(TAGS_URL, {"assigned_only": 1})
+
+        self.assertEqual(len(res.data), 1)
