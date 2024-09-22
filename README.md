@@ -105,9 +105,11 @@ echo DJANGO_SECRET_KEY='<ANY-SECRET-KEY>' > .env
 
 ---
 
-### API_Endpoints
+### API-Endpoints
 
-Here's a table that outlines the API endpoints from both the root project and the `recipe` and `user` apps in a clear, readable format:
+Here's a table that outlines the API endpoints from both the `recipe` and `user`.
+
+
 
 | **Endpoint**   | **HTTP Method** | **Description**                |
 | -------------- | --------------- | ------------------------------ |
@@ -115,7 +117,7 @@ Here's a table that outlines the API endpoints from both the root project and th
 | `/api/schema/` | GET             | API Schema (OpenAPI)           |
 | `/api/docs/`   | GET             | API Documentation (Swagger UI) |
 
-### User API Endpoints (`/api/users/`)
+#### User API Endpoints (`/api/users/`)
 
 | **Endpoint**         | **HTTP Method** | **Description**                       |
 | -------------------- | --------------- | ------------------------------------- |
@@ -123,7 +125,7 @@ Here's a table that outlines the API endpoints from both the root project and th
 | `/api/users/token/`  | POST            | Generate a new authentication token   |
 | `/api/users/me/`     | GET/PUT         | Get or update authenticated user info |
 
-### Recipe API Endpoints (`/api/recipe/`)
+#### Recipe API Endpoints (`/api/recipe/`)
 
 | **Endpoint**                    | **HTTP Method** | **Description**                           |
 | ------------------------------- | --------------- | ----------------------------------------- |
@@ -138,5 +140,3 @@ Here's a table that outlines the API endpoints from both the root project and th
 | `/api/recipe/ingredients/`      | GET             | List all ingredients                      |
 | `/api/recipe/ingredients/`      | POST            | Create a new ingredient                   |
 | `/api/recipe/ingredients/{id}/` | GET/PUT/DELETE  | Retrieve, update, or delete an ingredient |
-
-This format breaks down each API endpoint, HTTP method, and its purpose, making it easier to understand and navigate.
